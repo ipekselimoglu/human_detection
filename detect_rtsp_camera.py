@@ -1,3 +1,69 @@
+"""
+RTSP Tabanlı Gerçek Zamanlı İnsan Tespiti (YOLOv8)
+===================================================
+
+Bu betik, RTSP (Real-Time Streaming Protocol) üzerinden yayın yapan bir IP kameradan
+görüntü alarak YOLOv8 nesne algılama modeli ile gerçek zamanlı olarak insan tespiti yapar.
+
+Program, RTSP bağlantısı üzerinden kareleri (frame) sürekli olarak okur, her kare üzerinde
+YOLOv8 modelini çalıştırır ve "person" sınıfı (class ID: 0) tespit edildiğinde
+belirli aralıklarla kareleri kaydeder. Aynı zamanda ekrana tespit durumu ve zaman bilgisini yazar.
+
+Ana Özellikler
+--------------
+- RTSP üzerinden canlı yayın izleme ve gerçek zamanlı tespit
+- YOLOv8 derin öğrenme modeli ile insan algılama
+- RTSP bağlantısı koptuğunda otomatik yeniden bağlanma
+- Belirlenen saniye aralığında tespit edilen kareleri kaydetme
+- Görüntü üzerine bilgi metni ve zaman damgası ekleme
+
+Parametreler
+------------
+RTSP_URL : str
+    IP kameranın RTSP bağlantı adresi (örn. "rtsp://kullanici:parola@192.168.1.10:554/stream1")
+MODEL_NAME : str
+    Kullanılacak YOLOv8 model dosyasının adı veya yolu (örn. "yolov8n.pt")
+CONF_THRESHOLD : float
+    Modelin tahminleri için minimum güven eşiği (0.0 – 1.0 arası)
+SAVE_INTERVAL_SEC : int
+    İnsan tespit edildiğinde karelerin kaç saniyede bir kaydedileceği
+RECONNECT_DELAY : int
+    RTSP bağlantısı koptuğunda yeniden denemeden önce beklenecek süre (saniye)
+FONT : int
+    OpenCV yazı tipi (ekranda bilgi metinleri için kullanılır)
+
+Fonksiyonlar
+------------
+connect_rtsp(url: str) -> cv2.VideoCapture | None
+    RTSP bağlantısı kurar. Bağlantı başarılıysa cv2.VideoCapture nesnesi döner,
+    başarısız olursa None döner.
+
+Çalışma Akışı
+-------------
+1. YOLOv8 modeli belirtilen dosyadan yüklenir.
+2. RTSP bağlantısı `connect_rtsp()` fonksiyonu ile kurulur.
+3. Akıştan alınan kareler üzerinde sürekli olarak model çalıştırılır.
+4. Model çıktılarında kişi (class ID = 0) tespit edilirse:
+       - Ekrana “Human Detected” yazılır.
+       - Kare üzerine zaman bilgisi eklenir.
+       - Belirlenen aralıkta kare diske kaydedilir.
+5. Bağlantı kesilirse sistem otomatik olarak yeniden bağlanmayı dener.
+6. Kullanıcı “Q” tuşuna bastığında program sonlandırılır.
+
+Bağımlılıklar
+--------------
+- ultralytics
+- opencv-python
+- os
+- datetime
+- time
+
+Çıktılar
+--------
+- Terminal üzerinde tespit ve bağlantı durumu mesajları
+- Kaydedilen görüntü kareleri: alerts/rtsp_frames/ klasöründe tutulur
+"""
+
 from ultralytics import YOLO
 import cv2
 import os
@@ -84,6 +150,7 @@ while True:
 cap.release()
 cv2.destroyAllWindows()
 print(f"\nİzleme sonlandırıldı. Toplam {alert_id} kare kaydedildi.")
+
 
 
 
