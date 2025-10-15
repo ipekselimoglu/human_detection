@@ -52,12 +52,12 @@ cap = cv2.VideoCapture(VIDEO_SOURCE)
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
-print("🚀 Webcam monitoring started (press Q to quit)\n")
+print("Webcam monitoring started (press Q to quit)\n")
 
 while True:
     ret, frame = cap.read()
     if not ret:
-        print("⚠️ Kamera akışı okunamadı, tekrar deneniyor...")
+        print("Kamera akışı okunamadı, tekrar deneniyor...")
         cap.release()
         time.sleep(2)
         cap = cv2.VideoCapture(VIDEO_SOURCE)
@@ -69,27 +69,27 @@ while True:
     results = model(frame, verbose=False)
     boxes = results[0].boxes
 
-    # 🔎 İnsan sınıfı (class 0) + güven eşiği kontrolü
+    #  İnsan sınıfı (class 0) + güven eşiği kontrolü
     persons = [b for b in boxes if int(b.cls[0]) == 0 and b.conf[0] > CONF_THRESHOLD]
     has_person = len(persons) > 0
 
     if has_person:
-        # 🔴 “Human Detected” yazısı
+        #  “Human Detected” yazısı
         cv2.putText(frame, "HUMAN DETECTED", (20, 60), FONT, 1.8, (0, 0, 255), 5, cv2.LINE_AA)
         cv2.putText(frame, timestamp, (20, frame.shape[0] - 20),
                     FONT, 0.9, (255, 255, 255), 2, cv2.LINE_AA)
 
-        # 📸 Gerçek zaman kontrollü kayıt
+        #  Gerçek zaman kontrollü kayıt
         current_time = time.time()
         if current_time - last_save_time >= SAVE_INTERVAL_SEC:
             alert_id += 1
             last_save_time = current_time
             save_path = f"alerts/webcam_frames/human_{alert_id}_{timestamp.replace(':', '-')}.jpg"
             cv2.imwrite(save_path, frame)
-            print(f"📸 İnsan tespit edildi → {save_path}")
+            print(f"İnsan tespit edildi → {save_path}")
 
     else:
-        # 🟢 “No Human Detected” yazısı
+        #  “No Human Detected” yazısı
         cv2.putText(frame, "No Human Detected", (20, 60), FONT, 1.8, (0, 255, 0), 5, cv2.LINE_AA)
         cv2.putText(frame, timestamp, (20, frame.shape[0] - 20),
                     FONT, 0.9, (255, 255, 255), 2, cv2.LINE_AA)
@@ -99,8 +99,9 @@ while True:
 
     # Çıkış için Q
     if cv2.waitKey(1) & 0xFF == ord("q"):
-        print("\n🛑 İzleme sonlandırıldı.")
+        print("\n İzleme sonlandırıldı.")
         break
 
 cap.release()
 cv2.destroyAllWindows()
+
