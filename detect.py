@@ -69,7 +69,7 @@ alert_id = 0
 frame_count = 0
 last_save_frame = -interval_frames  # başta -5sn geriden başlasın
 
-print(f"🚀 Human detection every {SAVE_INTERVAL_SEC}s started...")
+print(f"Human detection every {SAVE_INTERVAL_SEC}s started...")
 
 # Frame frame ilerle
 for result in model.track(
@@ -85,7 +85,7 @@ for result in model.track(
 
     # Eğer insan yoksa (boxes boşsa veya class != 0)
     if not hasattr(result, "boxes") or len(result.boxes) == 0:
-        print(f"🟢 Frame {frame_count}: İnsan tespit edilmedi.")
+        print(f" Frame {frame_count}: İnsan tespit edilmedi.")
         continue
 
     cls = result.boxes.cls.cpu().numpy().astype(int)
@@ -95,7 +95,7 @@ for result in model.track(
         alert_id += 1
         last_save_frame = frame_count
 
-        print(f"📸 İnsan tespit edildi (Frame {frame_count}) → Kayıt alındı.")
+        print(f" İnsan tespit edildi (Frame {frame_count}) → Kayıt alındı.")
 
         # Yazılar ekle
         cv2.putText(frame, "Human Detected", (25, 50), FONT, 1.2, (0, 0, 255), 3, cv2.LINE_AA)
@@ -106,4 +106,5 @@ for result in model.track(
         cv2.imwrite(save_path, frame)
 
 cap.release()
-print(f"\n✅ İşlem tamamlandı. Toplam {alert_id} kare kaydedildi.")
+print(f"\n İşlem tamamlandı. Toplam {alert_id} kare kaydedildi.")
+
