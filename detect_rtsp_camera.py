@@ -21,9 +21,9 @@ def connect_rtsp(url):
     """Kamera bağlantısı kurar, başarısız olursa None döner"""
     cap = cv2.VideoCapture(url)
     if not cap.isOpened():
-        print("⚠️ RTSP bağlantısı kurulamadı. Tekrar denenecek...")
+        print("RTSP bağlantısı kurulamadı. Tekrar denenecek...")
         return None
-    print("✅ RTSP bağlantısı başarılı.")
+    print("RTSP bağlantısı başarılı.")
     return cap
 
 cap = connect_rtsp(RTSP_URL)
@@ -31,7 +31,7 @@ alert_id = 0
 frame_count = 0
 last_save_time = time.time() - SAVE_INTERVAL_SEC
 
-print("🚀 Real-time RTSP human detection started... (Kapatmak için 'Q' tuşuna basın)")
+print("Real-time RTSP human detection started... (Kapatmak için 'Q' tuşuna basın)")
 
 while True:
     if cap is None:
@@ -41,7 +41,7 @@ while True:
 
     ret, frame = cap.read()
     if not ret:
-        print("⚠️ Akış kesildi. Yeniden bağlanılıyor...")
+        print("Akış kesildi. Yeniden bağlanılıyor...")
         cap.release()
         cap = None
         continue
@@ -70,7 +70,7 @@ while True:
             last_save_time = time.time()
             save_path = f"alerts/rtsp_frames/human_{alert_id}.jpg"
             cv2.imwrite(save_path, frame)
-            print(f"📸 İnsan tespit edildi → {save_path}")
+            print(f"İnsan tespit edildi → {save_path}")
     else:
         cv2.putText(frame, "No Human Detected", (25, 50), FONT, 1, (0, 255, 0), 2)
 
@@ -83,6 +83,7 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
-print(f"\n✅ İzleme sonlandırıldı. Toplam {alert_id} kare kaydedildi.")
+print(f"\nİzleme sonlandırıldı. Toplam {alert_id} kare kaydedildi.")
+
 
 
